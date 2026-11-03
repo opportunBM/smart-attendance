@@ -1,0 +1,439 @@
+DOCUMENTATION COMPLETE - SMART ATTENDANCE
+=========================================
+
+Version de cette documentation : 10 septembre 2026
+Langue de l'application : français
+
+1. PRESENTATION GENERALE
+-------------------------
+
+Smart Attendance est une application web de gestion de présence et de suivi
+des cours. Elle permet de créer des comptes selon plusieurs profils, de gérer
+les départements et les classes, de créer des cours, d'inscrire les étudiants,
+de saisir les présences et de communiquer avec les utilisateurs par
+notifications internes et e-mails.
+
+L'application est une application front-end composée de pages HTML, de
+JavaScript côté navigateur et de feuilles de style. Elle ne possède pas de
+serveur applicatif local : les données sont stockées dans Supabase et les
+e-mails transactionnels sont envoyés par EmailJS.
+
+2. TECHNOLOGIES UTILISEES
+-------------------------
+
+HTML5
+  Structure des pages : accueil, connexion, inscription, récupération du mot
+  de passe et tableaux de bord.
+
+JavaScript (ES6+)
+  Logique applicative, événements des formulaires, appels asynchrones,
+  validation, navigation, gestion des rôles, cours, classes, présences et
+  notifications.
+
+Supabase
+  - Base PostgreSQL accessible avec le SDK JavaScript.
+  - Lecture et écriture des utilisateurs, départements, classes, cours,
+    inscriptions, présences et notifications.
+  - API REST générée automatiquement par Supabase.
+  - La clé utilisée dans le navigateur est une clé publique (publishable).
+
+EmailJS Browser SDK 4
+  Envoi d'e-mails depuis le navigateur sans serveur SMTP local. Le SDK est
+  chargé depuis jsDelivr dans les pages qui ont besoin d'envoyer un e-mail.
+
+Gmail API via EmailJS
+  Le service EmailJS nommé « Smart attendance mail » utilise le fournisseur
+  Gmail_API. Gmail autorise EmailJS à envoyer les messages au nom de l'adresse
+  connectée.
+
+Tailwind CSS
+  Mise en forme principalement réalisée avec des classes utilitaires chargées
+  depuis le CDN Tailwind.
+
+Font Awesome
+  Icônes utilisées dans les boutons et les tableaux de bord.
+
+3. ORGANISATION DES FICHIERS
+----------------------------
+
+Pages principales
+  home.html                 Page d'accueil.
+  login.html                Connexion.
+  register.html             Inscription multi-profils.
+  forgottenpassword.html    Réinitialisation du mot de passe.
+  more.html                 Page d'informations complémentaires.
+
+Pages des tableaux de bord
+  admin/admin.html                    Administration générale.
+  admin/chefDashboard.html            Tableau de bord chef de département.
+  admin/profDashboard.html            Tableau de bord professeur.
+  student/studentDashboard.html      Tableau de bord étudiant.
+
+JavaScript partagé
+  scripts/shared/email.js              Intégration EmailJS.
+  scripts/shared/supabase.js           Initialisation/accès Supabase.
+  scripts/shared/auth.js               Authentification et contrôle d'accès.
+  scripts/shared/notifications.js      Notifications internes.
+  scripts/shared/theme.js              Thème utilisateur.
+  scripts/shared/profile.js            Gestion de profil.
+  scripts/shared/dialogs.js            Dialogues et confirmations.
+  scripts/shared/dashboard-ui.js       Comportement commun des dashboards.
+  scripts/shared/date-utils.js         Fonctions de dates.
+  scripts/shared/course-utils.js       Fonctions communes aux cours.
+  scripts/shared/attendance-export.js  Export des présences.
+
+JavaScript métier
+  scripts/register.js                  Inscription.
+  scripts/login.js                     Connexion.
+  scripts/forgottenpassword.js         Mot de passe oublié.
+  scripts/admin.js                     Administration.
+  scripts/chef/*.js                    Fonctions du chef de département.
+  scripts/student/*.js                 Fonctions du profil étudiant.
+  scripts/studentDashboard.js          Cours et présence côté étudiant.
+  scripts/prof/*.js                    Fonctions du professeur.
+
+Styles
+  styles/admin.css                     Styles complémentaires du dashboard admin.
+  assets/images/                       Images d'arrière-plan.
+
+4. ROLES ET DROITS FONCTIONNELS
+--------------------------------
+
+Etudiant
+  - Créer un compte étudiant.
+  - Se connecter.
+  - Consulter son tableau de bord.
+  - Consulter les cours disponibles.
+  - S'inscrire à un cours.
+  - Consulter les informations de ses cours.
+  - Consulter et modifier son profil selon les champs proposés.
+  - Recevoir les notifications de cours et les e-mails associés.
+
+Professeur
+  - Soumettre une inscription comme professeur.
+  - Attendre la validation par l'administration.
+  - Consulter les cours qui lui sont attribués.
+  - Effectuer le suivi de présence pour les étudiants de ses cours.
+  - Consulter/exporter les données de présence selon les écrans disponibles.
+  - Recevoir un e-mail lors de l'attribution d'un cours.
+
+Chef de département
+  - Soumettre une inscription comme chef de département.
+  - Gérer les classes et les cours de son département.
+  - Attribuer un cours à un professeur.
+  - Consulter et gérer les inscriptions liées à son périmètre.
+  - Saisir ou consulter les présences selon les permissions de la page.
+
+Administrateur
+  - Consulter les indicateurs généraux.
+  - Consulter les inscriptions en attente.
+  - Confirmer ou refuser une inscription.
+  - Gérer les utilisateurs, départements, classes et codes administratifs.
+  - Recevoir les événements internes de l'application.
+  - Déclencher les e-mails de confirmation ou de refus.
+
+5. FONCTIONNEMENT DES PAGES
+----------------------------
+
+Accueil
+  Présente l'application et donne accès à la connexion ou à la création d'un
+  compte.
+
+Connexion
+  Vérifie les informations saisies auprès de Supabase, identifie le rôle de
+  l'utilisateur puis redirige vers le tableau de bord approprié.
+
+Inscription
+  Le formulaire est organisé en étapes. L'utilisateur sélectionne un profil,
+  saisit son identité, son adresse e-mail et les informations spécifiques à
+  son profil. Les départements et classes sont chargés depuis Supabase.
+  L'étudiant peut être créé directement, tandis que les profils nécessitant
+  une validation sont enregistrés dans une file d'attente.
+
+  Après création d'un compte étudiant, l'application tente d'envoyer un
+  e-mail de bienvenue. Si EmailJS est indisponible, le compte reste créé :
+  l'échec de l'e-mail est signalé dans la console et n'annule pas l'inscription.
+
+Mot de passe oublié
+  1. L'adresse est recherchée dans la table utilisateurs.
+  2. Un code numérique à quatre chiffres est généré.
+  3. Le mot de passe est mis à jour dans Supabase.
+  4. EmailJS tente d'envoyer le nouveau code.
+  5. Une erreur d'e-mail est affichée clairement à l'utilisateur.
+
+  Important : dans l'implémentation actuelle, le mot de passe est enregistré
+  tel quel dans la colonne mot_de_passe. Pour une application en production,
+  il est fortement recommandé de migrer vers Supabase Auth ou vers un
+  mécanisme serveur avec hachage et expiration des codes.
+
+Dashboard administrateur
+  Centralise les opérations de supervision : inscriptions en attente,
+  confirmation/refus, utilisateurs, départements, classes, codes et
+  statistiques. Lorsqu'une inscription est confirmée ou refusée, une
+  notification interne et un e-mail sont tentés.
+
+Dashboard chef
+  Permet de gérer les cours, de sélectionner une classe et un professeur,
+  d'utiliser les codes d'enregistrement et d'accéder au suivi des présences.
+  Lorsqu'un cours est assigné, une notification interne et un e-mail sont
+  générés pour le professeur.
+
+Dashboard étudiant
+  Affiche les cours accessibles, permet l'inscription à un cours et évite les
+  doublons d'inscription. Après une inscription réussie, un e-mail
+  récapitulatif est envoyé à l'étudiant.
+
+6. INTEGRATION EMAILJS
+----------------------
+
+Fichier central : scripts/shared/email.js
+
+Configuration actuellement utilisée :
+  publicKey                 zxubIkplNufPWcY3T
+  serviceId                 service_c9ggd55
+  notificationTemplateId   template_hv0rewf
+  securityTemplateId       template_4f29yg8
+
+Le SDK EmailJS est chargé avant email.js dans les pages concernées. Le
+module initialise le SDK une seule fois avec la public key, puis expose deux
+fonctions globales :
+
+sendNotificationEmail({
+  toEmail,
+  toName,
+  subject,
+  message,
+  actionUrl
+})
+  Utilisée pour les e-mails de bienvenue, d'inscription à un cours,
+  d'attribution de cours, de confirmation et de refus.
+
+sendSecurityEmail({
+  toEmail,
+  toName,
+  subject,
+  message,
+  code,
+  resetLink,
+  expiresAt
+})
+  Utilisée pour l'envoi du code de réinitialisation.
+
+Variables attendues dans le template de notification :
+  to_email, to_name, subject, message, action_url
+
+Variables attendues dans le template de sécurité :
+  to_email, to_name, subject, message, code, reset_link, expires_at
+
+Les noms sont sensibles à la casse et doivent être exactement identiques entre
+email.js et les champs dynamiques {{...}} du template EmailJS.
+
+7. DIAGNOSTIC DE L'ERREUR EMAIL OBSERVEE
+-----------------------------------------
+
+Les captures EmailJS montrent :
+  Résultat : Service Error
+  Provider ID : Gmail_API
+  Service : Smart attendance mail
+  Template : Smart Attendance - Notification
+  Description : Gmail_API: Request had insufficient authentication scopes.
+
+Cela signifie que la requête atteint bien EmailJS et le bon service, mais que
+Gmail refuse l'envoi parce que le compte Gmail connecté n'a pas accordé les
+permissions OAuth nécessaires. Ce n'est pas une erreur de destinataire, de
+subject, de message ou de URL.
+
+La capture des paramètres confirme que le navigateur envoie correctement :
+  to_email, to_name, subject, message et action_url.
+Elle confirme également que le template est trouvé. Le problème se situe
+entre EmailJS et Gmail, au niveau de l'autorisation du fournisseur.
+
+Cause la plus probable :
+  - le service Gmail a été connecté avec une autorisation incomplète ;
+  - l'autorisation OAuth a été révoquée ou modifiée ;
+  - le service a été créé avant l'ajout de la permission d'envoi ;
+  - le compte Gmail utilisé n'est plus celui autorisé dans EmailJS ;
+  - le consentement OAuth est resté dans un état obsolète après une modification
+    du service.
+
+8. CORRECTION A FAIRE DANS EMAILJS
+-----------------------------------
+
+La correction doit être effectuée dans le tableau de bord EmailJS, pas dans
+les paramètres envoyés par le JavaScript :
+
+  1. Ouvrir EmailJS et sélectionner le projet Smart Attendance.
+  2. Aller dans Email Services.
+  3. Ouvrir le service « Smart attendance mail ».
+  4. Vérifier que le fournisseur est Gmail/Gmail API et que le compte connecté
+     est la bonne adresse d'expédition.
+  5. Utiliser Reconnect, Re-authorize, ou reconnecter le compte Gmail selon le
+     bouton affiché par EmailJS.
+  6. Accepter toutes les permissions demandées, notamment la permission
+     permettant l'envoi de messages Gmail.
+  7. Enregistrer le service.
+  8. Envoyer un test depuis EmailJS avec le template
+     « Smart Attendance - Notification ».
+  9. Tester ensuite l'inscription et la récupération du mot de passe depuis
+     l'application.
+
+Si l'erreur persiste :
+  - supprimer l'autorisation EmailJS dans le compte Google puis reconnecter le
+    service ;
+  - vérifier l'écran Google « accès des applications tierces » ;
+  - vérifier qu'une politique Google Workspace n'interdit pas l'application ;
+  - vérifier que le compte n'est pas limité par un mode test OAuth ;
+  - vérifier que l'adresse Gmail possède le droit d'envoyer des e-mails ;
+  - recréer le service Gmail dans EmailJS puis remplacer serviceId dans
+    email.js uniquement si un nouvel identifiant est créé.
+
+Ne pas remplacer les template IDs au hasard : les captures montrent que le
+template de notification est bien trouvé. Il faut d'abord réparer le service
+Gmail_API.
+
+9. AMELIORATION APPORTEE AU CODE
+--------------------------------
+
+Le fichier scripts/shared/email.js utilise maintenant une fonction commune
+sendEmailJsMessage. Elle conserve l'erreur originale dans la propriété cause
+et ajoute un message explicite contenant le texte retourné par EmailJS.
+
+Ainsi, les journaux du navigateur et les messages des écrans concernés
+indiquent désormais directement l'erreur du fournisseur, par exemple :
+  « EmailJS n'a pas pu envoyer l'e-mail :
+   Gmail_API: Request had insufficient authentication scopes. »
+
+Cette amélioration ne peut pas accorder elle-même une permission Gmail : une
+autorisation OAuth ne doit jamais être fabriquée côté navigateur. Elle rend
+cependant le diagnostic plus rapide et évite de confondre un problème EmailJS
+avec une erreur de formulaire.
+
+Dans la plupart des actions métier, l'e-mail est volontairement secondaire :
+la création du compte, du cours ou de l'inscription reste enregistrée même si
+l'envoi échoue. Le code affiche une alerte ou écrit un avertissement dans la
+console selon l'écran. Pour la récupération du mot de passe, l'utilisateur
+est explicitement informé que le mot de passe a été modifié mais que le mail
+n'a pas été envoyé.
+
+10. FLUX COMPLET D'UN E-MAIL
+-----------------------------
+
+  1. L'utilisateur déclenche une action dans l'interface.
+  2. Le script valide les champs obligatoires.
+  3. Le script appelle sendNotificationEmail ou sendSecurityEmail.
+  4. email.js vérifie que le SDK EmailJS est chargé.
+  5. Le SDK est initialisé avec la public key.
+  6. EmailJS reçoit le service ID, le template ID et les paramètres.
+  7. EmailJS transmet la demande au fournisseur Gmail_API.
+  8. Gmail vérifie le jeton OAuth et ses scopes.
+  9. Si l'autorisation est valide, Gmail expédie le message.
+ 10. Sinon, EmailJS renvoie Service Error et le code journalise l'explication.
+
+11. VERIFICATIONS DE DEPANNAGE
+--------------------------------
+
+Dans la console du navigateur :
+  - vérifier qu'il n'y a pas d'erreur de chargement de email.min.js ;
+  - vérifier que typeof emailjs n'est pas « undefined » ;
+  - vérifier que serviceId et templateId correspondent au dashboard ;
+  - vérifier l'adresse to_email ;
+  - consulter l'objet d'erreur complet et sa propriété cause.
+
+Dans EmailJS :
+  - vérifier l'état du service ;
+  - vérifier l'adresse Gmail connectée ;
+  - lancer un test du template ;
+  - consulter Email History ;
+  - ouvrir le détail de l'erreur et noter le Provider ID.
+
+Différence entre les erreurs :
+  SDK non chargé
+    Le CDN, le réseau ou l'ordre des scripts est en cause.
+  Template not found
+    Le template ID est incorrect ou le template a été supprimé.
+  Bad request / missing parameter
+    Un nom de variable du template ne correspond pas au JavaScript.
+  Gmail insufficient authentication scopes
+    Le service Gmail doit être reconnecté avec les scopes d'envoi.
+  Invalid recipient
+    L'adresse to_email est absente ou mal formée.
+
+12. SECURITE ET LIMITES
+------------------------
+
+La public key EmailJS et la clé publique Supabase peuvent être visibles dans
+le navigateur. Elles ne doivent pas être confondues avec une clé secrète.
+Ne jamais publier une service role key Supabase, un secret Gmail, un mot de
+passe SMTP ou un token privé dans les fichiers JavaScript.
+
+EmailJS côté client expose une surface d'envoi qu'il faut protéger avec les
+quotas, les limites et les réglages anti-abus du compte EmailJS. Pour une
+application publique à grande échelle, un backend ou une fonction Supabase
+Edge est préférable : les secrets restent côté serveur et les demandes
+d'envoi peuvent être authentifiées et limitées.
+
+Les mots de passe et codes méritent également une amélioration de sécurité :
+utiliser Supabase Auth, hacher les secrets, limiter la durée de validité,
+limiter le nombre d'essais et ne jamais envoyer un mot de passe permanent par
+e-mail.
+
+13. PROCEDURE DE TEST APRES CORRECTION
+---------------------------------------
+
+  1. Reconnecter Gmail dans EmailJS.
+  2. Tester le template directement dans EmailJS.
+  3. Ouvrir register.html depuis un serveur HTTP local.
+  4. Créer un compte étudiant avec une adresse de test.
+  5. Vérifier Email History et la réception du mail.
+  6. Attribuer un cours à un professeur et vérifier le mail d'attribution.
+  7. Inscrire un étudiant à un cours et vérifier le mail de confirmation.
+  8. Utiliser forgottenpassword.html et vérifier le mail contenant le code.
+  9. Tester une confirmation et un refus depuis l'administration.
+ 10. Vérifier que chaque erreur reste visible dans la console et dans
+     l'interface sans effacer la donnée métier déjà enregistrée.
+
+Résultat attendu :
+  - Email History affiche OK au lieu de Service Error.
+  - Le Provider ID Gmail_API ne signale plus de scope insuffisant.
+  - Les variables du template contiennent les valeurs attendues.
+  - Les messages arrivent dans la boîte du destinataire.
+
+14. RESUME DU PROBLEME ACTUEL
+------------------------------
+
+Le JavaScript appelle correctement EmailJS, le service et le template
+correspondent, et les paramètres visibles dans la capture sont cohérents.
+L'échec vient de la connexion Gmail_API dans EmailJS, dont le jeton ne
+possède pas les scopes d'authentification nécessaires à l'envoi.
+
+Action prioritaire : reconnecter/réautoriser « Smart attendance mail » dans
+EmailJS avec le bon compte Gmail et accepter la permission d'envoi. La petite
+amélioration de scripts/shared/email.js permet ensuite d'obtenir un message
+d'erreur détaillé si la configuration externe n'est toujours pas corrigée.
+
+15. ETAT TEMPORAIRE DE L'ENVOI D'E-MAIL
+----------------------------------------
+
+À la demande du propriétaire du projet, tous les envois d'e-mails depuis le
+site sont actuellement désactivés. Le SDK EmailJS et le fichier partagé
+email.js ne sont plus chargés par les pages HTML. Ainsi, aucune page ne peut
+initialiser EmailJS ni contacter le service Gmail_API.
+
+Les fonctions métier qui tenteraient normalement d'envoyer un e-mail
+continuent de gérer leur propre erreur : la création d'un compte, d'un cours
+ou d'une inscription n'est pas annulée à cause de cette désactivation. La
+réinitialisation de mot de passe indique que l'e-mail n'a pas pu être envoyé.
+
+Le fichier scripts/shared/email.js est conservé comme point d'intégration
+futur, mais ses fonctions lèvent explicitement une erreur de désactivation et
+n'effectuent aucun appel réseau. Lorsqu'une nouvelle méthode d'envoi sera
+choisie, il faudra la réactiver volontairement, remplacer cette implémentation
+et revalider tous les flux indiqués dans la section 13.
+
+
+
+
+
+
+
+

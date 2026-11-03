@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - Tableau de Bord Chef de Département</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon/favicon-16x16.png">
+    <link rel="icon" href="../assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="../assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="../assets/favicon/site.webmanifest">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="../tailwind.config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .chef-shell {
+            min-height: calc(100vh - 72px);
+            background: var(--sa-bg);
+        }
+
+        .chef-sidebar {
+            position: sticky;
+            top: 72px;
+            width: 264px;
+            flex: 0 0 264px;
+            height: calc(100vh - 72px);
+            overflow-y: auto;
+            background: var(--sa-surface);
+            border-right: 1px solid var(--sa-border);
+            transition: margin-left .25s ease, transform .25s ease;
+        }
+
+        .chef-shell.sidebar-collapsed .chef-sidebar {
+            margin-left: -264px;
+        }
+
+        .chef-sidebar-profile {
+            border-bottom: 1px solid var(--sa-border);
+        }
+
+        .chef-nav-link {
+            color: var(--sa-muted);
+            transition: color .2s ease, background-color .2s ease;
+        }
+
+        .chef-nav-link:hover,
+        .chef-nav-link:focus-visible {
+            color: var(--sa-text);
+            background: var(--sa-surface-raised);
+        }
+
+        .chef-nav-link[aria-current="page"] {
+            color: var(--sa-accent-foreground);
+            background: var(--sa-accent);
+            box-shadow: 0 8px 20px rgba(var(--sa-shadow), .16);
+        }
+
+        .chef-subnav-link {
+            color: var(--sa-muted);
+            transition: color .2s ease, background-color .2s ease;
+        }
+
+        .chef-subnav-link:hover,
+        .chef-subnav-link:focus-visible {
+            color: var(--sa-text);
+            background: var(--sa-surface-raised);
+        }
+
+        .chef-subnav-link[aria-current="page"] {
+            color: var(--sa-accent-foreground);
+            background: var(--sa-accent);
+        }
+
+        .chef-main-column {
+            min-width: 0;
+        }
+
+        .chef-topbar {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            min-height: 72px;
+            background: var(--sa-surface);
+            border-bottom: 1px solid var(--sa-border);
+        }
+
+        .chef-top-actions.theme-dashboard-actions {
+            flex-wrap: nowrap !important;
+            justify-content: flex-end !important;
+        }
+
+        .chef-top-actions #theme-switcher,
+        .chef-top-actions .logout-button {
+            min-height: 44px;
+            box-sizing: border-box;
+        }
+
+        #chef-sidebar-toggle {
+            display: inline-flex;
+            min-width: 44px;
+            min-height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chef-top-actions .logout-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chef-top-actions .dashboard-theme-switcher {
+            flex: 0 0 auto !important;
+            flex-basis: auto !important;
+            width: auto !important;
+            margin-top: 0 !important;
+        }
+
+        .chef-content {
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 767px) {
+            .chef-topbar {
+                min-height: 64px;
+            }
+
+            .chef-shell {
+                min-height: calc(100vh - 64px);
+            }
+
+            .chef-sidebar {
+                position: fixed;
+                top: 64px;
+                left: 0;
+                z-index: 30;
+                width: min(280px, 82vw);
+                height: calc(100dvh - 64px);
+                max-height: none;
+                overflow-x: hidden;
+                overflow-y: auto;
+                transform: translateX(-100%);
+                border-right: 1px solid #5b21b6;
+                box-shadow: 12px 0 28px rgba(0, 0, 0, .28);
+                transition: transform .25s ease;
+            }
+
+            .chef-shell.sidebar-collapsed .chef-sidebar {
+                margin-left: 0;
+            }
+
+            .chef-sidebar.is-open {
+                transform: translateX(0);
+            }
+
+            .chef-sidebar-profile {
+                padding-top: 1.25rem;
+                padding-bottom: 1.25rem;
+            }
+
+            .chef-top-actions #theme-switcher {
+                width: 44px !important;
+                min-width: 44px;
+                height: 44px;
+                padding: 0 !important;
+                justify-content: center;
+            }
+
+            .chef-top-actions #theme-switcher > span:first-child {
+                display: none;
+            }
+
+            .chef-top-actions .logout-button {
+                width: 44px;
+                min-width: 44px;
+                height: 44px;
+                padding: 0 !important;
+                font-size: 0 !important;
+            }
+
+            .chef-top-actions .logout-button i {
+                margin: 0 !important;
+                font-size: .8rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .chef-nav-link,
+            .chef-sidebar,
+            .chef-subnav-link {
+                transition: none;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="../styles/theme.css">
+    <!-- SDK Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../scripts/shared/footer.js" defer></script>
+    <script src="../scripts/shared/theme.js" defer></script>
+    <script src="../scripts/shared/loading.js" defer></script>
+    <script src="../scripts/shared/dialogs.js" defer></script>
+    <!-- Fonctions partagees chargees avant les fonctions du chef -->
+    <script src="../scripts/shared/supabase.js" defer></script>
+    <script src="../scripts/shared/notifications.js" defer></script>
+    <script src="../scripts/shared/dashboard-ui.js" defer></script>
+    <script src="../scripts/shared/auth.js" defer></script>
+    <script src="../scripts/shared/session-timeout.js" defer></script>
+    <script src="../scripts/shared/date-utils.js" defer></script>
+    <script src="../scripts/shared/course-utils.js" defer></script>
+    <script src="../scripts/shared/profile.js" defer></script>
+    <script src="../scripts/shared/attendance-export.js" defer></script>
+    <!-- Fonctions propres au dashboard chef -->
+    <script src="../scripts/chef/profile.js" defer></script>
+    <script src="../scripts/chef/tabs.js" defer></script>
+    <script src="../scripts/chef/courses.js" defer></script>
+    <script src="../scripts/chef/classes.js" defer></script>
+    <script src="../scripts/chef/attendance-register.js" defer></script>
+    <script src="../scripts/chef/manage-course.js" defer></script>
+    <script src="../scripts/chef/init.js" defer></script>
+</head>
+
+<body data-theme-placement="dashboard"
+    class="bg-[#191919] text-gray-100 font-sans min-h-screen flex flex-col selection:bg-brand selection:text-white">
+
+    <header class="chef-topbar flex w-full items-center justify-between gap-3 px-4 md:px-7">
+        <div class="flex min-w-0 items-center gap-3">
+            <button id="chef-sidebar-toggle" type="button" aria-controls="chef-sidebar" aria-expanded="false"
+                aria-label="Ouvrir le menu du chef de département"
+                class="rounded-lg p-2 text-white hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand">
+                <i class="fa-solid fa-bars" aria-hidden="true"></i>
+            </button>
+            <img src="../assets/favicon/android-chrome-192x192.png" alt="" aria-hidden="true"
+                class="h-9 w-9 shrink-0 rounded-lg object-contain">
+            <div class="min-w-0">
+                <p class="truncate text-sm font-extrabold tracking-wide text-white">Smart Attendance</p>
+                <p class="hidden text-[11px] text-brand/80 sm:block">Espace chef de département</p>
+            </div>
+        </div>
+        <div id="chef-top-actions" class="chef-top-actions flex shrink-0 items-center gap-2">
+            <button onclick="logout()"
+                class="logout-button rounded-lg border border-white/20 px-3 py-2 text-xs font-bold text-white transition hover:bg-white/10">
+                <i class="fa-solid fa-right-from-bracket mr-1.5"></i>Déconnexion
+            </button>
+        </div>
+    </header>
+
+    <div class="chef-shell flex-1 flex w-full">
+        <aside id="chef-sidebar" class="chef-sidebar flex flex-col" aria-label="Navigation chef de département">
+            <div class="chef-sidebar-profile flex items-center gap-4 px-4 py-6 text-left">
+                <div id="profile-pic-container"
+                    class="h-20 w-20 rounded-2xl overflow-hidden border-2 border-teal-400 bg-[#191919] shadow-lg flex items-center justify-center shrink-0">
+                </div>
+                <div class="min-w-0 flex-1">
+                    <h1 id="chef-name" class="break-words text-sm font-extrabold text-gray-100 tracking-wide">
+                        <span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement du profil...</span></span>
+                    </h1>
+                    <p class="text-xs text-teal-300 font-semibold mt-1">Chef de Département</p>
+                    <p id="chef-faculte" class="break-words text-[11px] text-zinc-300 font-medium mt-3">Département : ---</p>
+                    <p id="chef-matricule" class="break-words text-[11px] text-zinc-400 font-mono mt-1">Matricule : ---</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-3 py-5 space-y-2" aria-label="Sections du tableau de bord">
+                <p class="px-3 pb-2 text-[10px] font-bold uppercase tracking-[.18em] text-zinc-400">Espace département</p>
+                <button onclick="toggleChefDashboardMenu()" id="btn-cours" type="button" aria-current="page" aria-expanded="true" aria-controls="chef-dashboard-submenu"
+                    class="chef-nav-link w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold">
+                    <i class="fa-solid fa-table-columns w-5 text-center" aria-hidden="true"></i>
+                    <span>Tableau de bord</span>
+                    <i id="chef-dashboard-chevron" class="fa-solid fa-chevron-down ml-auto text-xs transition-transform" aria-hidden="true"></i>
+                </button>
+                <div id="chef-dashboard-submenu" class="ml-4 space-y-1 border-l border-brand/40 pl-3">
+                    <button type="button" data-stat-filter="all" data-stat-color="brand" aria-current="page"
+                        onclick="filterChefCoursesByStatus('all')"
+                        class="chef-subnav-link flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-book-open w-4 text-center" aria-hidden="true"></i>Tous les cours</span>
+                        <span id="stat-total-cours" class="font-bold text-white">—</span>
+                    </button>
+                    <button type="button" data-stat-filter="active" data-stat-color="emerald"
+                        onclick="filterChefCoursesByStatus('active')"
+                        class="chef-subnav-link flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-circle-check w-4 text-center" aria-hidden="true"></i>Cours actifs</span>
+                        <span id="stat-cours-actifs" class="font-bold text-white">—</span>
+                    </button>
+                    <button type="button" data-stat-filter="completed" data-stat-color="red"
+                        onclick="filterChefCoursesByStatus('completed')"
+                        class="chef-subnav-link flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-flag-checkered w-4 text-center" aria-hidden="true"></i>Cours achevés</span>
+                        <span id="stat-cours-acheves" class="font-bold text-white">—</span>
+                    </button>
+                    <button type="button" data-stat-filter="upcoming" data-stat-color="blue"
+                        onclick="filterChefCoursesByStatus('upcoming')"
+                        class="chef-subnav-link flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-hourglass-start w-4 text-center" aria-hidden="true"></i>Cours futurs</span>
+                        <span id="stat-cours-futurs" class="font-bold text-white">—</span>
+                    </button>
+                    <button type="button" data-stat-filter="eleves" data-stat-color="blue"
+                        onclick="switchTab('eleves')"
+                        class="chef-subnav-link flex w-full items-center justify-between gap-3 rounded-lg px-3 py-2.5 text-left text-xs font-semibold">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-users w-4 text-center" aria-hidden="true"></i>Élèves du département</span>
+                        <span id="stat-total-eleves" class="font-bold text-white">—</span>
+                    </button>
+                </div>
+                <button onclick="switchTab('secu')" id="btn-secu" type="button"
+                    class="chef-nav-link w-full flex items-center gap-3 rounded-xl px-3 py-3 text-left text-sm font-semibold">
+                    <i class="fa-solid fa-user-shield w-5 text-center" aria-hidden="true"></i>
+                    <span>Profil et sécurité</span>
+                </button>
+            </nav>
+            <div class="border-t border-brand/30 p-4 text-[11px] text-brand/70">
+                Smart Attendance <span class="block mt-1">Gestion des cours et classes</span>
+                <a href="../guide.html" class="dashboard-guide-link mt-3">
+                    <i class="fa-solid fa-book-open" aria-hidden="true"></i>Guide d’utilisation
+                </a>
+            </div>
+        </aside>
+
+        <div class="chef-main-column flex flex-1 flex-col">
+            <main class="chef-content flex-1 p-4 md:p-7 lg:p-9">
+
+            <!-- ================= CONTENU : COURS ================= -->
+            <div id="content-cours" class="block space-y-6 animate-fade-in">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-2">
+                    <div class="space-y-1">
+                        <h2 class="text-xs text-zinc-500">> Espace Chef de Département</h2>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-brand">> Gestion de mes cours
+                        </h3>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+                        <button
+                            class="w-full sm:w-auto bg-brand hover:bg-brand-hover text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md whitespace-nowrap cursor-pointer flex items-center justify-center gap-2"
+                            onclick="toggleCourseModal(true)">
+                            <i class="fa-solid fa-plus"></i> Créer un nouveau cours
+                        </button>
+                        <select id="chef-course-page-size"
+                            class="w-full sm:w-auto px-3 py-2.5 bg-[#202020] border border-zinc-700 rounded-xl text-xs text-zinc-300 outline-none focus:border-brand">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <div class="flex items-center gap-2 w-full">
+                            <input type="text" id="search-cours" placeholder="Filtrer mes cours..."
+                                class="w-full px-3 py-2.5 bg-[#202020] border border-zinc-700 rounded-xl text-xs text-gray-200 outline-none focus:border-brand">
+                            <button id="course-search-button" type="button"
+                                class="search-trigger px-3 py-2.5 rounded-xl bg-brand hover:bg-brand-hover text-white text-xs font-bold transition-all"
+                                aria-label="Rechercher un cours" title="Rechercher">
+                                <i class="fa-solid fa-magnifying-glass"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="modules-container" class="space-y-4">
+                    <p class="text-zinc-500 text-center py-8 text-xs"><span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement de vos cours...</span></span></p>
+                </div>
+                <div id="chef-course-pagination" class="flex items-center justify-between gap-3 text-xs text-zinc-400">
+                </div>
+            </div>
+
+            <!-- ================= CONTENU : ÉLÈVES ================= -->
+            <div id="content-eleves" class="hidden space-y-6 animate-fade-in">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-2">
+                    <div class="space-y-1">
+                        <h2 class="text-xs text-zinc-500">> Espace Chef de Département</h2>
+                        <h3 class="text-sm font-bold uppercase tracking-wider text-brand">> Liste des classes et
+                            des étudiants inscrits</h3>
+                    </div>
+                    <div class="flex items-center gap-2 w-full md:w-auto">
+                        <select id="chef-class-page-size"
+                            class="px-3 py-2.5 bg-[#202020] border border-zinc-700 rounded-xl text-xs text-zinc-300 outline-none focus:border-brand">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                        </select>
+                        <select id="chef-class-academic-year"
+                            class="px-3 py-2.5 bg-[#202020] border border-zinc-700 rounded-xl text-xs text-zinc-300 outline-none focus:border-brand">
+                            <option value="">Toutes les années</option>
+                            <option value="2026-2027">2026-2027</option>
+                            <option value="2027-2028">2027-2028</option>
+                            <option value="2028-2029">2028-2029</option>
+                            <option value="2029-2030">2029-2030</option>
+                            <option value="2030-2031">2030-2031</option>
+                            <option value="2031-2032">2031-2032</option>
+                            <option value="2032-2033">2032-2033</option>
+                            <option value="2033-2034">2033-2034</option>
+                            <option value="2034-2045">2034-2045</option>
+                        </select>
+                        <input type="text" id="search-classes" placeholder="Filtrer une classe..."
+                            class="w-full md:w-64 px-3 py-2.5 bg-[#202020] border border-zinc-700 rounded-xl text-xs text-gray-200 outline-none focus:border-brand">
+                    </div>
+                </div>
+
+                <div id="classes-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <p class="text-zinc-500 text-center py-8 text-xs col-span-2"><span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement des classes...</span></span></p>
+                </div>
+                <div id="chef-class-pagination" class="flex items-center justify-between gap-3 text-xs text-zinc-400">
+                </div>
+            </div>
+
+            <!-- ================= CONTENU : INFORMATIONS ET SÉCURITÉ ================= -->
+            <div id="content-secu" class="hidden animate-fade-in">
+                <div class="w-full bg-[#202020] p-6 md:p-8 rounded-3xl border border-zinc-800 shadow-xl">
+                    <h2 class="text-lg font-bold text-gray-100 mb-6 border-b border-zinc-700 pb-4">Paramètres du profil
+                    </h2>
+                    <form class="space-y-6" id="update-profile-form">
+                        <div class="flex items-center gap-6 mb-6">
+                            <div id="settings-pic-container"
+                                class="w-20 h-20 rounded-full overflow-hidden border border-zinc-700 bg-[#191919] shrink-0 flex items-center justify-center">
+                                <!-- Remplacé dynamiquement par JS -->
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-2">Photo
+                                    de profil</label>
+                                <input type="file" id="update-photo-file" accept="image/*"
+                                    class="block w-full text-sm text-zinc-400 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-brand file:text-white hover:file:bg-brand transition-all cursor-pointer">
+                            </div>
+                        </div>
+                        <div
+                            class="grid grid-cols-1 md:grid-cols-2 gap-6 p-4 bg-[#191919] rounded-2xl border border-zinc-800">
+                            <div>
+                                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">Nom
+                                    Complet</label>
+                                <input type="text" id="profile-fullname" value="" disabled
+                                    class="w-full px-4 py-2.5 bg-transparent border-none text-zinc-400 font-medium cursor-not-allowed focus:outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">Rôle</label>
+                                <input type="text" value="Chef de Département" disabled
+                                    class="w-full px-4 py-2.5 bg-transparent border-none text-zinc-400 font-medium cursor-not-allowed focus:outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">Matricule</label>
+                                <input type="text" id="chef-matricule-input" value="" disabled
+                                    class="w-full px-4 py-2.5 bg-transparent border-none text-zinc-400 font-medium cursor-not-allowed focus:outline-none">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-zinc-500 mb-1">Département</label>
+                                <input type="text" id="chef-faculty-input" value="" disabled
+                                    class="w-full px-4 py-2.5 bg-transparent border-none text-zinc-400 font-medium cursor-not-allowed focus:outline-none">
+                            </div>
+                        </div>
+                        <div class="space-y-6 pt-4">
+                            <div>
+                                <label
+                                    class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Adresse
+                                    Email</label>
+                                <input type="email" id="profile-email" value=""
+                                    class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Nouveau
+                                        mot de passe</label>
+                                    <input type="password" id="new-password"
+                                        placeholder="Laissez vide pour ne pas changer"
+                                        class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Confirmer
+                                        le mot de passe</label>
+                                    <input type="password" id="confirm-password"
+                                        placeholder="Confirmez le nouveau mot de passe"
+                                        class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-4 flex justify-end">
+                            <button type="submit" id="save-profile-btn"
+                                class="w-full md:w-auto px-8 py-3 bg-brand text-white rounded-xl font-bold text-sm transition-all shadow-lg">
+                                <i class="fa-solid fa-floppy-disk mr-2"></i>Sauvegarder les modifications
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ================= MODALE DE CRÉATION DE COURS ================= -->
+    <div id="course-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-[#202020] hidden animate-fade-in">
+        <div class="bg-[#202020] border-0 w-full h-full p-6 md:p-8 shadow-2xl relative overflow-y-auto no-scrollbar">
+            <button onclick="toggleCourseModal(false)"
+                class="absolute top-6 right-6 text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="mb-6">
+                <h2 class="text-xl font-extrabold text-gray-100 tracking-tight">Création d'un cours</h2>
+                <p class="text-xs text-zinc-400 mt-1">Remplissez les informations du module pour l'ajouter au système.
+                </p>
+            </div>
+            <form id="create-course-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Nom du cours /
+                        module</label>
+                    <input type="text" id="course-name" required placeholder="ex: Algorithmique Avancée"
+                        class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Année
+                            académique</label>
+                        <select id="course-year" required
+                            class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                            <option value="" disabled selected>Choisissez une année académique</option>
+                            <option value="2025-2026">2025-2026</option>
+                            <option value="2026-2027">2026-2027</option>
+                            <option value="2027-2028">2027-2028</option>
+                            <option value="2028-2029">2028-2029</option>
+                            <option value="2029-2030">2029-2030</option>
+                            <option value="2030-2031">2030-2031</option>
+                            <option value="2031-2032">2031-2032</option>
+                            <option value="2032-2033">2032-2033</option>
+                            <option value="2033-2034">2033-2034</option>
+                            <option value="2034-2045">2034-2045</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Code du
+                            cours</label>
+                        <input type="text" id="course-code" required placeholder="ex: INFO-301"
+                            class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label
+                            class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Département</label>
+                        <div class="relative">
+                            <select id="course-faculty" required
+                                class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                                <option value="">Chargement du département...</option>
+                            </select>
+                            <span id="course-faculty-loading" class="pointer-events-none absolute right-10 top-1/2 -translate-y-1/2 text-brand" aria-hidden="true"><span class="sa-loading__spinner"></span></span>
+                        </div>
+                    </div>
+                    <div>
+                        <label
+                            class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Classe</label>
+                        <select id="course-class" required
+                            class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                            <option value="">Choisissez une classe</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Date de début
+                            (Interdit passée)</label>
+                        <input type="date" id="course-start-date" required
+                            class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Date de
+                            fin</label>
+                        <input type="date" id="course-end-date" required
+                            class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Code
+                        d'enregistrement</label>
+                    <input type="text" id="course-enrollment-code" required placeholder="Créez un code d'enregistrement"
+                        class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all font-mono">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Email du
+                        professeur assigné</label>
+                    <div id="course-professor-picker" class="relative">
+                        <input id="course-professor-email" type="hidden" value="">
+                        <button id="course-professor-trigger" type="button" aria-haspopup="listbox"
+                            aria-expanded="false" aria-controls="course-professor-options"
+                            class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl text-left text-sm text-gray-200 transition-all flex items-center justify-between gap-3">
+                            <span id="course-professor-selected" class="text-zinc-400">Choisissez un professeur</span>
+                            <i class="fa-solid fa-chevron-down text-xs text-zinc-500" aria-hidden="true"></i>
+                        </button>
+                        <div id="course-professor-dropdown"
+                            class="hidden absolute z-20 top-full mt-2 w-full rounded-xl border border-zinc-700 bg-[#202020] p-3 shadow-xl">
+                            <input id="course-professor-search" type="search" placeholder="Rechercher par e-mail..."
+                                autocomplete="off" aria-label="Rechercher un professeur par e-mail"
+                                class="w-full px-3 py-2.5 bg-[#191919] border border-zinc-700 rounded-lg focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200">
+                            <div id="course-professor-options" role="listbox" aria-label="Professeurs"
+                                class="mt-2 max-h-48 overflow-y-auto space-y-1">
+                                <p class="px-3 py-2 text-xs text-zinc-500"><span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement des professeurs...</span></span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pt-4 flex items-center justify-end gap-3">
+                    <button type="button" onclick="toggleCourseModal(false)"
+                        class="px-5 py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl font-semibold text-sm transition-all cursor-pointer">
+                        <i class="fa-solid fa-xmark mr-2"></i>Annuler
+                    </button>
+                    <button type="submit" id="submit-course-btn"
+                        class="px-6 py-2.5 bg-brand hover:bg-brand-hover text-white rounded-xl font-bold text-sm transition-all shadow-lg hover:shadow-brand/50 cursor-pointer">
+                        Créer le cours
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= MODALE : VOIR LE COURS (Étudiants enregistrés & Registre style photo) ================= -->
+    <div id="view-course-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-[#202020] hidden animate-fade-in">
+        <div class="bg-[#202020] border-0 w-full h-full p-6 md:p-8 shadow-2xl relative overflow-y-auto no-scrollbar">
+            <button onclick="toggleViewCourseModal(false)"
+                class="absolute top-6 right-6 text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="mb-6">
+                <span
+                    class="text-xs font-mono bg-brand/10 text-brand px-2.5 py-1 rounded-full border border-brand/20">Registre
+                    des présences du cours</span>
+                <h2 id="view-course-title" class="text-xl font-extrabold text-gray-100 tracking-tight mt-2">
+                    <span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement...</span></span></h2>
+                <p id="view-course-subtitle" class="text-xs text-zinc-400 mt-1">---</p>
+            </div>
+            <div class="border-t border-zinc-800 pt-6">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-brand mb-4">> Élèves enregistrés et
+                    suivi journalier</h3>
+                <div id="view-course-students-container" class="overflow-x-auto">
+                    <p class="text-zinc-500 text-xs text-center py-4"><span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement du registre...</span></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODALE : GÉRER LE COURS (Nom modifiable à tout moment & Suppression si non commencé) ================= -->
+    <div id="manage-course-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-[#202020] hidden animate-fade-in">
+        <div class="bg-[#202020] border-0 w-full h-full p-6 md:p-8 shadow-2xl relative overflow-y-auto no-scrollbar">
+            <button onclick="toggleManageCourseModal(false)"
+                class="absolute top-6 right-6 text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="mb-6">
+                <span
+                    class="text-xs font-mono bg-brand/10 text-brand px-2.5 py-1 rounded-full border border-brand/20">Administration
+                    du module</span>
+                <h2 id="manage-course-name-title" class="text-xl font-extrabold text-gray-100 tracking-tight mt-2">Nom
+                    du cours</h2>
+                <p class="text-xs text-zinc-400 mt-1">Modifiez le nom ou la date de fin, ou supprimez le cours s'il n'a
+                    pas encore commencé.</p>
+            </div>
+
+            <div class="space-y-4">
+                <div
+                    class="bg-[#191919] border border-zinc-800 rounded-2xl p-4 grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-xs">
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-800 pb-2">
+                        <span class="text-zinc-400">Code du cours :</span>
+                        <span id="manage-course-code" class="font-mono font-bold text-gray-200">---</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-800 pb-2">
+                        <span class="text-zinc-400">Département :</span>
+                        <span id="manage-course-faculty" class="font-medium text-gray-200">---</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-800 pb-2">
+                        <span class="text-zinc-400">Classe :</span>
+                        <span id="manage-course-class" class="font-medium text-gray-200">---</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-800 pb-2">
+                        <span class="text-zinc-400">Professeur assigné :</span>
+                        <span id="manage-course-prof" class="font-medium text-brand text-right">---</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-800 pb-2">
+                        <span class="text-zinc-400">Date de début :</span>
+                        <span id="manage-course-start" class="font-medium text-gray-200">---</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-800 pb-2">
+                        <span class="text-zinc-400">Date de fin :</span>
+                        <span id="manage-course-end" class="font-medium text-gray-200">---</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4 border-b border-zinc-800 pb-2">
+                        <span class="text-zinc-400">Code d'enregistrement :</span>
+                        <span id="manage-course-enroll-code"
+                            class="font-mono font-bold text-brand text-right">---</span>
+                    </div>
+                    <div class="flex items-center justify-between gap-4">
+                        <span class="text-zinc-400">Élèves enregistrés :</span>
+                        <span id="manage-course-students-count" class="font-bold text-emerald-400">0</span>
+                    </div>
+                </div>
+
+                <div class="space-y-2 pt-2">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400">Modifier le nom du
+                        cours</label>
+                    <input type="text" id="manage-course-name-input"
+                        class="w-full px-4 py-2.5 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all">
+                    <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400">Modifier la date de
+                        fin du cours</label>
+                    <input type="date" id="manage-end-date"
+                        class="w-full px-4 py-3 bg-[#191919] border border-zinc-700 rounded-xl focus:ring-2 focus:ring-brand focus:border-brand outline-none text-sm text-gray-200 transition-all mt-2">
+                    <div id="manage-course-notice"
+                        class="text-xs text-zinc-400 bg-[#191919] p-3 rounded-xl border border-zinc-800">Vous pouvez
+                        modifier le nom ou la date de fin tant que le cours est actif.</div>
+                    <button type="button" id="save-course-changes-btn" disabled
+                        class="w-full py-2.5 bg-brand hover:bg-brand-hover text-white rounded-xl font-bold text-xs transition-all shadow-md opacity-50 cursor-not-allowed mt-2">
+                        Enregistrer les changements
+                    </button>
+                </div>
+
+                <!-- Suppression du cours (si non commencé) -->
+                <div id="delete-course-container" class="pt-2 border-t border-zinc-800">
+                    <!-- Rempli dynamiquement par JS -->
+                </div>
+
+                <div class="pt-4 flex items-center justify-end">
+                    <button type="button" onclick="toggleManageCourseModal(false)"
+                        class="w-full py-2.5 bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-xl font-semibold text-sm transition-all cursor-pointer">
+                        Fermer
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODALE : LISTE DES ÉTUDIANTS D'UNE CLASSE ================= -->
+    <div id="class-students-modal"
+        class="fixed inset-0 z-50 flex items-center justify-center bg-[#202020] hidden animate-fade-in">
+        <div class="bg-[#202020] border-0 w-full h-full p-6 md:p-8 shadow-2xl relative overflow-y-auto no-scrollbar">
+            <button onclick="toggleClassStudentsModal(false)"
+                class="absolute top-6 right-6 text-zinc-400 hover:text-white bg-zinc-800/80 hover:bg-zinc-700 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer">
+                <i class="fa-solid fa-xmark text-sm"></i>
+            </button>
+            <div class="mb-6">
+                <span id="detail-class-badge"
+                    class="text-xs font-mono bg-brand/10 text-brand px-2.5 py-1 rounded-full border border-brand/20">Classe</span>
+                <h2 id="detail-class-title" class="text-xl font-extrabold text-gray-100 tracking-tight mt-2">
+                    <span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement...</span></span></h2>
+                <p id="detail-class-info" class="text-xs text-zinc-400 mt-1">---</p>
+            </div>
+            <div class="border-t border-zinc-800 pt-6">
+                <h3 class="text-sm font-bold uppercase tracking-wider text-brand mb-4">> Étudiants inscrits</h3>
+                <div id="class-students-container" class="space-y-3">
+                    <p class="text-zinc-500 text-xs text-center py-4"><span class="sa-loading" role="status" aria-live="polite"><span class="sa-loading__spinner" aria-hidden="true"></span><span>Chargement de la liste...</span></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

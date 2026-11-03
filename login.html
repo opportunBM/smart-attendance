@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - Connexion</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="icon" href="assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <!-- Inclusion de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind.config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="scripts/shared/supabase.js" defer></script>
+    <script src="scripts/login.js" defer></script>
+    <script src="scripts/shared/theme.js" defer></script>
+    <link rel="stylesheet" href="styles/theme.css">
+
+</head>
+
+<body
+    class="bg-canvas text-content-primary font-sans min-h-screen flex items-center justify-center p-4 selection:bg-brand selection:text-white">
+
+    <!-- Carte principale de connexion (Style épuré sombre) -->
+    <div class="bg-[#202020] w-full max-w-md p-8 rounded-2xl shadow-2xl border border-zinc-800">
+        <!-- En-tête / Logo -->
+        <div class="flex items-center gap-3 mb-6">
+            <img src="assets/favicon/android-chrome-512x512.png" alt="Logo Smart Attendance"
+                class="w-12 h-12 rounded-xl object-contain shadow-md shrink-0">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-gray-100">Smart Attendance</h1>
+                <p class="text-xs text-brand font-medium">Portail de connexion</p>
+            </div>
+        </div>
+
+        <!-- Formulaire de Connexion -->
+        <form action="#" method="POST" class="space-y-4">
+
+            <!-- Champ Email -->
+            <div>
+                <label for="input-email"
+                    class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Adresse e-mail</label>
+                <input type="email" required id="input-email" class="w-full px-4 py-3 bg-[#191919] border border-zinc-800 rounded-xl focus:ring-2 focus:ring-brand 
+                focus:outline-none text-sm text-gray-200 placeholder-zinc-600"
+                    placeholder="vous@exemple.com" autocomplete="username">
+            </div>
+
+            <!-- Champ Mot de passe avec l'œil interactif -->
+            <div>
+                <label class="block text-xs font-bold uppercase tracking-wider text-zinc-400 mb-1">Mot de passe</label>
+                <div class="relative">
+                    <input type="password" required id="password" autocomplete="current-password" class="w-full px-4 py-3 bg-[#191919] border border-zinc-800 rounded-xl focus:ring-2 
+                    focus:ring-brand focus:outline-none text-sm text-gray-200 placeholder-zinc-600 pr-10"
+                        placeholder="••••••••">
+                    <span onclick="togglePassword()" id="eye-icon"
+                        class="absolute inset-y-0 right-0 pr-3 flex items-center text-zinc-500 cursor-pointer text-sm select-none"><i
+                            class="fa-regular fa-eye" id="eye-open"></i></span>
+                </div>
+            </div>
+
+            <!-- Bouton de validation dynamique -->
+            <button type="submit" id="btn-submit"
+                class="w-full bg-brand hover:bg-brand-hover text-white py-3 rounded-xl font-medium text-sm shadow-lg transition-all mt-2 cursor-pointer">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i>Se connecter
+            </button>
+        </form>
+
+        <!-- Liens de redirection -->
+        <div class="mt-6 text-center text-xs text-zinc-400">
+            <i class="fa-solid fa-key mr-1"></i>Mot de passe oublié ? <a href="forgottenpassword.html"
+                class="text-green-500 font-semibold hover:underline">Réinitialiser</a>
+        </div>
+        <div class="mt-6 text-center text-xs text-zinc-400">
+            <i class="fa-solid fa-user-plus mr-1"></i>Première visite ? <a href="register.html"
+                class="text-brand font-semibold hover:underline">Créer un compte</a>
+        </div>
+
+        <!-- Bouton de retour en arrière encadré -->
+        <div class="mt-6 pt-4 border-t border-zinc-800 text-center">
+            <a href="home.html"
+                class="inline-block w-full py-2.5 px-4 bg-[#191919] hover:bg-zinc-800 border border-zinc-800 text-red-500 rounded-xl text-xs font-medium transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Retour à l'accueil
+            </a>
+        </div>
+
+    </div>
+</body>
+
+</html>

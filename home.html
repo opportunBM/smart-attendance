@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - Accueil</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="icon" href="assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <!-- Inclusion de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind.config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="scripts/shared/footer.js" defer></script>
+    <script src="scripts/shared/theme.js" defer></script>
+    <style>
+        /* Motif de points en arrière-plan similaire à la maquette */
+        .bg-dots {
+            background-color: var(--sa-bg);
+            background-image: radial-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+
+        body.home-page {
+            background-color: var(--sa-bg);
+        }
+
+        #smart-splash-screen {
+            transition: opacity 500ms ease;
+        }
+
+        .splash-orbit {
+            position: absolute;
+            inset: 50%;
+            width: 9rem;
+            height: 9rem;
+            border: 1px solid color-mix(in srgb, var(--sa-accent) 35%, transparent);
+            border-radius: 9999px;
+            transform: translate(-50%, -50%) scale(0.72);
+            animation: splash-orbit 2.4s ease-out infinite;
+        }
+
+        .splash-orbit:nth-child(2) {
+            animation-delay: 0.8s;
+        }
+
+        .splash-orbit:nth-child(3) {
+            animation-delay: 1.6s;
+        }
+
+        .splash-scan-card {
+            animation: splash-card-glow 2s ease-in-out infinite;
+        }
+
+        .splash-scan-line {
+            animation: splash-scan 1.8s ease-in-out infinite;
+        }
+
+        .splash-check {
+            animation: splash-check 1.8s ease-in-out infinite;
+        }
+
+        .splash-progress {
+            animation: splash-progress 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+
+        .splash-animation,
+        .splash-final {
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            width: 100%;
+            transition: opacity 250ms ease, transform 250ms ease;
+        }
+
+        .splash-animation {
+            transform: translate(-50%, -50%);
+        }
+
+        .splash-final {
+            visibility: hidden;
+            opacity: 0;
+            transform: translate(-50%, -46%) scale(0.92);
+        }
+
+        #smart-splash-screen.is-loaded .splash-animation {
+            visibility: hidden;
+            opacity: 0;
+            transform: translate(-50%, -54%) scale(0.96);
+        }
+
+        #smart-splash-screen.is-loaded .splash-final {
+            visibility: visible;
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        #smart-splash-screen.is-loaded .splash-progress {
+            animation: splash-progress-finish 500ms ease-out forwards;
+        }
+
+        .splash-logo-original {
+            filter: invert(1) grayscale(1) contrast(100);
+            mix-blend-mode: screen;
+        }
+
+        @keyframes splash-orbit {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.72);
+            }
+
+            25% {
+                opacity: 0.7;
+            }
+
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(1.45);
+            }
+        }
+
+        @keyframes splash-card-glow {
+            0%, 100% {
+                box-shadow: 0 0 18px color-mix(in srgb, var(--sa-accent) 16%, transparent);
+            }
+
+            50% {
+                box-shadow: 0 0 34px rgba(16, 185, 129, 0.3);
+            }
+        }
+
+        @keyframes splash-scan {
+            0%, 100% {
+                top: 20%;
+                opacity: 0.35;
+            }
+
+            50% {
+                top: 78%;
+                opacity: 1;
+            }
+        }
+
+        @keyframes splash-check {
+            0%, 20%, 100% {
+                opacity: 0.45;
+                transform: scale(0.88);
+            }
+
+            45%, 75% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes splash-progress {
+            0% {
+                width: 4%;
+                transform: translateX(0);
+            }
+
+            75% {
+                width: 72%;
+                transform: translateX(18%);
+            }
+
+            100% {
+                width: 92%;
+                transform: translateX(8%);
+            }
+        }
+
+        @keyframes splash-progress-finish {
+            to {
+                width: 100%;
+                transform: translateX(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            #smart-splash-screen {
+                transition-duration: 1ms;
+            }
+
+            .splash-orbit,
+            .splash-scan-card,
+            .splash-scan-line,
+            .splash-check,
+            .splash-progress,
+            .splash-animation,
+            .splash-final {
+                animation-duration: 1ms;
+                animation-delay: 0ms;
+                transition-duration: 1ms;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="styles/theme.css">
+</head>
+
+<body class="home-page bg-cover bg-center bg-no-repeat text-gray-100 font-sans min-h-screen 
+flex items-center justify-center p-4 selection:bg-brand selection:text-white">
+    <div id="smart-splash-screen"
+        class="fixed inset-0 z-[100] flex min-h-screen items-center justify-center overflow-hidden bg-[#121212] px-6 text-white"
+        role="status" aria-live="polite" aria-label="Chargement de Smart Attendance">
+        <div class="relative h-80 w-full max-w-sm">
+            <div class="splash-animation flex flex-col items-center text-center">
+                <div class="relative mb-8 flex h-40 w-40 items-center justify-center">
+                    <span class="splash-orbit" aria-hidden="true"></span>
+                    <span class="splash-orbit" aria-hidden="true"></span>
+                    <span class="splash-orbit" aria-hidden="true"></span>
+
+                    <div class="splash-scan-card relative z-10 flex h-24 w-32 flex-col justify-center overflow-hidden rounded-2xl border border-brand/40 bg-zinc-900/95 p-3">
+                        <div class="flex items-center gap-2">
+                            <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-brand/20 text-brand" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8">
+                                    <circle cx="12" cy="8" r="3"></circle>
+                                    <path d="M6.5 19a5.5 5.5 0 0 1 11 0M4 4a11 11 0 0 0 0 16M20 4a11 11 0 0 1 0 16"></path>
+                                </svg>
+                            </span>
+                            <span class="space-y-1.5">
+                                <span class="block h-1.5 w-12 rounded-full bg-zinc-600"></span>
+                                <span class="block h-1 w-8 rounded-full bg-zinc-700"></span>
+                            </span>
+                        </div>
+                        <span class="mt-3 block h-1 w-20 rounded-full bg-zinc-700"></span>
+                        <span class="splash-scan-line absolute left-0 right-0 h-px bg-emerald-300 shadow-[0_0_10px_2px_rgba(52,211,153,0.8)]"></span>
+                    </div>
+
+                    <span class="splash-check absolute bottom-5 right-3 z-20 flex h-8 w-8 items-center justify-center rounded-full border border-emerald-300/50 bg-emerald-400 text-zinc-950 shadow-lg shadow-emerald-500/30" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="m4 10 4 4 8-8"></path>
+                        </svg>
+                    </span>
+                </div>
+
+                <p class="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-brand">Portail universitaire</p>
+                <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">Smart Attendance</h1>
+                <div class="mt-4 flex items-center gap-2 text-sm text-zinc-400">
+                    <span class="h-2 w-2 animate-pulse rounded-full bg-emerald-400" aria-hidden="true"></span>
+                    <span>Préparation de votre espace</span>
+                </div>
+
+                <div class="mt-7 h-1.5 w-56 max-w-full overflow-hidden rounded-full bg-zinc-800" role="progressbar"
+                    aria-label="Chargement en cours" aria-valuemin="0" aria-valuemax="100">
+                    <div class="splash-progress h-full rounded-full bg-gradient-to-r from-brand via-brand to-emerald-400"></div>
+                </div>
+            </div>
+
+            <div class="splash-final flex flex-col items-center text-center">
+                <div class="flex h-36 w-36 items-center justify-center rounded-[2rem] bg-brand shadow-2xl shadow-brand/50 sm:h-44 sm:w-44">
+                    <img src="assets/favicon/android-chrome-512x512.png" alt=""
+                        class="splash-logo-original h-full w-full rounded-[2rem] object-contain">
+                </div>
+                <h1 class="mt-6 text-2xl font-bold tracking-tight sm:text-3xl">Smart Attendance</h1>
+            </div>
+        </div>
+    </div>
+
+    <!-- Conteneur global centré verticalement et horizontalement -->
+    <div class="max-w-6xl mx-auto w-full my-auto">
+
+        <!-- En-tête de la page -->
+        <header class="mb-8">
+            <p class="text-xs uppercase tracking-[0.25em] text-brand font-bold">Portail universitaire</p>
+            <h1 class="home-heading text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-2">Smart Attendance
+            </h1>
+            <div class="flex items-center gap-3">
+                <img src="assets/favicon/android-chrome-512x512.png" alt="Logo Smart Attendance"
+                    class="h-10 w-10 rounded-lg object-contain shadow-md shrink-0">
+                <div>
+                    <h2 class="home-heading text-sm font-bold text-white">Gestion des Présences</h2>
+                    <p class="text-xs text-brand font-medium">Plateforme de gestion pour Étudiants, Professeurs, Chefs de département et Administrateurs
+                    </p>
+                </div>
+            </div>
+        </header>
+
+        <!-- Grille Principale -->
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+            <!-- Colonne de Gauche : Accès Rapide -->
+            <div
+                class="home-card bg-[#1c1c1c] border border-zinc-800 rounded-2xl p-6 flex flex-col justify-between shadow-xl">
+                <div>
+                    <h3 class="home-heading text-sm font-bold text-gray-200 mb-4 tracking-wide">Accès Rapide</h3>
+                    <div class="space-y-3">
+                        <a href="login.html"
+                            class="block w-full py-3 px-4 bg-brand hover:bg-brand-hover text-white text-center font-medium rounded-xl text-sm transition-all shadow-lg shadow-brand/30">
+                            <i class="fa-solid fa-right-to-bracket mr-2"></i>Se connecter
+                        </a>
+                        <a href="register.html"
+                            class="home-secondary-action block w-full py-3 px-4 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 text-center font-medium rounded-xl text-sm border border-zinc-700 transition-all">
+                            <i class="fa-solid fa-user-plus mr-2"></i>Créer un compte
+                        </a>
+                        <a href="more.html"
+                            class="home-outline-action block w-full py-3 px-4 bg-transparent hover:bg-zinc-800/50 text-zinc-400 hover:text-white text-center font-medium rounded-xl text-sm border border-zinc-800 transition-all">
+                            <i class="fa-solid fa-circle-info mr-2"></i>En savoir plus
+                        </a>
+                    </div>
+                </div>
+
+                <div class="home-divider mt-8 pt-6 border-t border-zinc-800/80">
+                    <h4 class="text-xs font-bold uppercase tracking-wider text-zinc-500 mb-2">Besoin d'aide ?</h4>
+                    <p class="home-muted text-xs text-zinc-400 leading-relaxed">
+                        Bienvenue sur Smart Attendance. Connectez-vous avec votre adresse e-mail et votre mot de passe ;
+                        vous serez redirigé vers le tableau de bord associé à votre compte.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Colonne de Droite : Espaces selon les rôles de l'application -->
+            <div class="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Carte Espace Professeur -->
+                <a href="login.html"
+                    class="home-card home-space-card home-space-prof block bg-[#1c1c1c] border border-brand/20 rounded-2xl p-6 shadow-xl hover:border-brand/60 transform transition-all duration-300 hover:scale-[1.02]">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-2xl bg-brand/15 text-brand flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-chalkboard-user text-brand"></i>
+                        </div>
+                    </div>
+                    <h3 class="home-heading text-base font-bold text-white mb-3">Espace Professeur</h3>
+                    <p class="home-muted text-xs md:text-sm text-zinc-400 mb-4 leading-relaxed">
+                        Consultez les cours qui vous sont attribués, suivez les étudiants inscrits et gérez les séances
+                        de présence de vos enseignements.
+                    </p>
+                    <ul class="space-y-2 text-xs text-brand">
+                        <li><i class="fa-solid fa-angle-right mr-2 text-brand"></i>Consultation des cours et des étudiants inscrits</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-brand"></i>Saisie et suivi des présences</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-brand"></i>Exportation des rapports de présence</li>
+                    </ul>
+                </a>
+
+                <!-- Carte Espace Étudiant -->
+                <a href="login.html"
+                    class="home-card home-space-card home-space-student block bg-[#1c1c1c] border border-blue-500/20 rounded-2xl p-6 shadow-xl hover:border-blue-400/60 transform transition-all duration-300 hover:scale-[1.02]">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-500/15 text-blue-300 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-user-graduate text-blue-700"></i>
+                        </div>
+                    </div>
+                    <h3 class="home-heading text-base font-bold text-white mb-3">Espace Étudiant</h3>
+                    <p class="home-muted text-xs md:text-sm text-zinc-400 mb-4 leading-relaxed">
+                        Consultez les cours disponibles, inscrivez-vous aux enseignements qui vous concernent et
+                        suivez votre parcours de présence depuis votre tableau de bord.
+                    </p>
+                    <ul class="space-y-2 text-xs text-blue-700">
+                        <li><i class="fa-solid fa-angle-right mr-2 text-blue-700"></i>Consultation et inscription aux cours</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-blue-700"></i>Suivi des cours actifs et achevés</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-blue-700"></i>Consultation de votre présence et de votre profil</li>
+                    </ul>
+                </a>
+
+                <!-- Carte Espace Chef de Département -->
+                <a href="login.html"
+                    class="home-card home-space-card home-space-dept block bg-[#1c1c1c] border border-emerald-500/20 rounded-2xl p-6 shadow-xl hover:border-emerald-400/60 transform transition-all duration-300 hover:scale-[1.02]">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-300 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-building-columns text-emerald-700"></i>
+                        </div>
+                    </div>
+                    <h3 class="home-heading text-base font-bold text-white mb-3">Espace Chef de Département</h3>
+                    <p class="home-muted text-xs md:text-sm text-zinc-400 mb-4 leading-relaxed">
+                        Pilotez les activités de votre département, organisez les cours et coordonnez les professeurs,
+                        les classes et le suivi des étudiants.
+                    </p>
+                    <ul class="space-y-2 text-xs text-emerald-700">
+                        <li><i class="fa-solid fa-angle-right mr-2 text-emerald-700"></i>Gestion des cours, classes et codes d'inscription</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-emerald-700"></i>Attribution des cours aux professeurs</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-emerald-700"></i>Suivi des étudiants et des présences</li>
+                    </ul>
+                </a>
+
+                <!-- Carte Espace Administrateur Système -->
+                <a href="login.html"
+                    class="home-card home-space-card home-space-admin block bg-[#1c1c1c] border border-amber-500/20 rounded-2xl p-6 shadow-xl hover:border-amber-400/60 transform transition-all duration-300 hover:scale-[1.02]">
+                    <div class="flex items-center gap-3 mb-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/15 text-amber-300 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-shield-halved text-amber-700"></i>
+                        </div>
+                    </div>
+                    <h3 class="home-heading text-base font-bold text-white mb-3">Espace Administrateur Système</h3>
+                    <p class="home-muted text-xs md:text-sm text-zinc-400 mb-4 leading-relaxed">
+                        Supervisez l'ensemble de la plateforme, contrôlez les inscriptions et administrez les
+                        départements, les utilisateurs et les paramètres de sécurité.
+                    </p>
+                    <ul class="space-y-2 text-xs text-amber-700">
+                        <li><i class="fa-solid fa-angle-right mr-2 text-amber-700"></i>Validation ou refus des inscriptions</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-amber-700"></i>Gestion des départements, professeurs et chefs</li>
+                        <li><i class="fa-solid fa-angle-right mr-2 text-amber-700"></i>Suivi global et informations de sécurité</li>
+                    </ul>
+                </a>
+
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+        function hideSplashScreen() {
+            const splashScreen = document.getElementById("smart-splash-screen");
+            if (!splashScreen) return;
+
+            splashScreen.classList.add("opacity-0", "pointer-events-none");
+            window.setTimeout(() => splashScreen.remove(), 500);
+        }
+
+        let pageLoaded = document.readyState === "complete";
+        let logoDurationElapsed = false;
+        let splashHidden = false;
+
+        function hideSplashWhenReady() {
+            if (pageLoaded && logoDurationElapsed && !splashHidden) {
+                splashHidden = true;
+                hideSplashScreen();
+            }
+        }
+
+        function showSplashLogo() {
+            const splashScreen = document.getElementById("smart-splash-screen");
+            if (!splashScreen) return;
+
+            splashScreen.classList.add("is-loaded");
+            window.setTimeout(() => {
+                logoDurationElapsed = true;
+                hideSplashWhenReady();
+            }, 1000);
+        }
+
+        window.setTimeout(showSplashLogo, 1000);
+
+        window.addEventListener("load", () => {
+            pageLoaded = true;
+            hideSplashWhenReady();
+        }, { once: true });
+
+        if (pageLoaded) hideSplashWhenReady();
+    </script>
+</body>
+
+</html>

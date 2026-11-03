@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Smart Attendance - En savoir plus</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="icon" href="assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <!-- Inclusion de Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind.config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="scripts/shared/footer.js" defer></script>
+    <script src="scripts/shared/theme.js" defer></script>
+    <link rel="stylesheet" href="styles/theme.css">
+</head>
+
+<body
+    class="bg-canvas text-content-primary font-sans min-h-screen flex items-center justify-center p-4 selection:bg-brand selection:text-white">
+
+    <!-- Carte principale / Conteneur -->
+    <div class="bg-[#202020] w-full max-w-2xl p-8 rounded-2xl shadow-2xl border border-zinc-800 my-8">
+
+        <!-- En-tête / Logo -->
+        <div class="flex items-center gap-3 mb-6">
+            <img src="assets/favicon/android-chrome-512x512.png" alt="Logo Smart Attendance"
+                class="w-12 h-12 rounded-xl object-contain shadow-md shrink-0">
+            <div>
+                <h1 class="text-xl font-bold tracking-tight text-gray-100">Smart Attendance</h1>
+                <p class="text-xs text-brand font-medium">À propos du projet</p>
+            </div>
+        </div>
+
+        <!-- Contenu explicatif -->
+        <div class="space-y-6 text-sm text-zinc-300">
+
+            <!-- Section 1 : C'est quoi ? -->
+            <div class="bg-[#191919] p-4 rounded-xl border border-zinc-800">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-brand mb-2"><i
+                        class="fa-solid fa-lightbulb mr-2"></i>Qu'est-ce que Smart Attendance ?</h2>
+                <p class="leading-relaxed text-zinc-400 text-xs md:text-sm">
+                    <strong>Smart Attendance</strong> est une solution numérique moderne conçue pour automatiser et
+                    sécuriser la gestion des présences académiques. Fini les feuilles de papier perdues ou les longues
+                    listes d'émargement : le système centralise l'assiduité des étudiants en temps réel.
+                </p>
+            </div>
+
+            <!-- Section 2 : Le système de cartes magnétiques -->
+            <div class="bg-[#191919] p-4 rounded-xl border border-zinc-800">
+                <h2 class="text-sm font-bold uppercase tracking-wider text-brand mb-2"><i
+                        class="fa-solid fa-id-card mr-2"></i>Le pointage par cartes magnétiques</h2>
+                <p class="leading-relaxed text-zinc-400 text-xs md:text-sm mb-3">
+                    Pour garantir une rapidité et une fiabilité absolue lors des entrées en auditoire, notre solution
+                    s'appuie sur la technologie des <strong>cartes d'étudiants magnétiques à scanner</strong> :
+                </p>
+                <ul class="list-disc list-inside space-y-1 text-xs md:text-sm text-zinc-400">
+                    <li class="pl-1">Chaque étudiant possède une carte magnétique unique liée à son profil et son
+                        matricule.</li>
+                    <li class="pl-1">Il suffit de scanner la carte sur un lecteur à l'entrée de la salle pour que la
+                        présence soit instantanément enregistrée.</li>
+                    <li class="pl-1">Le système vérifie la correspondance avec la photo de profil obligatoire pour
+                        éviter toute usurpation d'identité.</li>
+                </ul>
+            </div>
+
+            <!-- Section 3 : Pour qui ? -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div class="bg-[#191919] p-4 rounded-xl border border-zinc-800">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-200 mb-1"><i
+                            class="fa-solid fa-user-graduate mr-2"></i>Pour les étudiants</h3>
+                    <p class="text-xs text-zinc-400">
+                        Un suivi transparent de votre assiduité, un enregistrement ultra-rapide par scan de carte et un
+                        compte sécurisé avec photo vérifiée.
+                    </p>
+                </div>
+                <div class="bg-[#191919] p-4 rounded-xl border border-zinc-800">
+                    <h3 class="text-xs font-bold uppercase tracking-wider text-gray-200 mb-1"><i
+                            class="fa-solid fa-chalkboard-user mr-2"></i>Pour les professeurs</h3>
+                    <p class="text-xs text-zinc-400">
+                        Un gain de temps précieux en début de cours, l'accès à des rapports de présence fiables et
+                        automatisés sans effort administratif.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Boutons d'action rapides -->
+        <div class="mt-8 pt-4 border-t border-zinc-800 flex flex-col sm:flex-row gap-3">
+            <a href="register.html"
+                class="flex-1 text-center py-2.5 px-4 bg-brand hover:bg-brand-hover text-white rounded-xl text-xs font-medium transition-all shadow-lg">
+                <i class="fa-solid fa-user-plus mr-2"></i>Créer un compte
+            </a>
+            <a href="login.html"
+                class="flex-1 text-center py-2.5 px-4 bg-green-600 hover:bg-green-700 border border-green-800 text-zinc-300 rounded-xl text-xs font-medium transition-colors">
+                <i class="fa-solid fa-right-to-bracket mr-2"></i>Se connecter
+            </a>
+        </div>
+
+        <!-- Bouton de retour en arrière encadré -->
+        <div class="mt-4 text-center">
+            <a href="home.html"
+                class="inline-block w-full py-2.5 px-4 bg-[#191919] hover:bg-zinc-800 border border-zinc-800 text-red-500 rounded-xl text-xs font-medium transition-colors">
+                <i class="fa-solid fa-arrow-left mr-2"></i>Retour à l'accueil
+            </a>
+        </div>
+    </div>
+
+</body>
+
+</html>

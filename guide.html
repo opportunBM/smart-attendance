@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="fr" class="h-full">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Guide d’utilisation de Smart Attendance pour les étudiants, professeurs, chefs de département et administrateurs.">
+    <title>Smart Attendance - Guide d’utilisation</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png">
+    <link rel="icon" href="assets/favicon/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png">
+    <link rel="manifest" href="assets/favicon/site.webmanifest">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="tailwind.config.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="scripts/shared/footer.js" defer></script>
+    <script src="scripts/shared/theme.js" defer></script>
+    <link rel="stylesheet" href="styles/theme.css">
+</head>
+
+<body class="min-h-full flex flex-col font-sans" data-theme="dark">
+    <header class="border-b border-zinc-800 bg-[#202020]">
+        <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-5">
+            <a href="home.html" class="inline-flex items-center gap-3 text-sm font-bold text-gray-100">
+                <img src="assets/favicon/android-chrome-192x192.png" alt="" aria-hidden="true" class="h-10 w-10 rounded-lg">
+                <span>Smart Attendance</span>
+            </a>
+            <a href="login.html" class="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-brand-hover">
+                <i class="fa-solid fa-right-to-bracket mr-2" aria-hidden="true"></i>Se connecter
+            </a>
+        </div>
+    </header>
+
+    <main class="mx-auto w-full max-w-6xl flex-1 px-5 py-10 md:py-14">
+        <section class="mb-10 rounded-3xl border border-zinc-800 bg-[#202020] p-6 shadow-xl md:p-10">
+            <p class="text-xs font-bold uppercase tracking-[.18em] text-brand">Centre d’aide</p>
+            <h1 class="mt-3 text-3xl font-extrabold tracking-tight text-gray-100 md:text-5xl">Guide d’utilisation</h1>
+            <p class="mt-4 max-w-3xl text-sm leading-7 text-zinc-400 md:text-base">
+                Retrouvez ici les principales étapes pour utiliser Smart Attendance. Choisissez la section correspondant à votre rôle ; les menus et actions disponibles dépendent des droits associés à votre compte.
+            </p>
+            <nav class="mt-7 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-label="Accès rapide aux guides">
+                <a href="#etudiant" class="guide-role-link rounded-xl border border-zinc-700 bg-[#191919] p-4 text-sm font-bold text-gray-100 transition-all">
+                    <i class="fa-solid fa-user-graduate mr-2 text-brand" aria-hidden="true"></i>Étudiant
+                </a>
+                <a href="#professeur" class="guide-role-link rounded-xl border border-zinc-700 bg-[#191919] p-4 text-sm font-bold text-gray-100 transition-all">
+                    <i class="fa-solid fa-chalkboard-user mr-2 text-brand" aria-hidden="true"></i>Professeur
+                </a>
+                <a href="#chef-departement" class="guide-role-link rounded-xl border border-zinc-700 bg-[#191919] p-4 text-sm font-bold text-gray-100 transition-all">
+                    <i class="fa-solid fa-building-user mr-2 text-brand" aria-hidden="true"></i>Chef de département
+                </a>
+                <a href="#administrateur" class="guide-role-link rounded-xl border border-zinc-700 bg-[#191919] p-4 text-sm font-bold text-gray-100 transition-all">
+                    <i class="fa-solid fa-shield-halved mr-2 text-brand" aria-hidden="true"></i>Administrateur
+                </a>
+            </nav>
+        </section>
+
+        <section class="mb-8 rounded-3xl border border-zinc-800 bg-[#202020] p-6 md:p-8" aria-labelledby="demarrer">
+            <h2 id="demarrer" class="text-xl font-bold text-gray-100 md:text-2xl">Avant de commencer</h2>
+            <div class="mt-5 grid gap-5 md:grid-cols-2">
+                <div>
+                    <h3 class="font-bold text-gray-100"><i class="fa-solid fa-right-to-bracket mr-2 text-brand" aria-hidden="true"></i>Connexion</h3>
+                    <p class="mt-2 text-sm leading-6 text-zinc-400">Ouvrez la page de connexion, saisissez l’adresse e-mail et le mot de passe liés à votre compte, puis sélectionnez « Se connecter ». Le système ouvre automatiquement l’espace correspondant au rôle du compte. Les comptes professeur et chef de département peuvent nécessiter une validation préalable de l’administration.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-100"><i class="fa-solid fa-moon mr-2 text-brand" aria-hidden="true"></i>Navigation et thème</h3>
+                    <p class="mt-2 text-sm leading-6 text-zinc-400">Sur les dashboards, utilisez le menu latéral (bouton burger sur petit écran) pour passer d’une section à l’autre. Le bouton « Thème » alterne entre les modes clair et sombre ; le choix est conservé. Le guide est aussi accessible depuis le pied de page.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-100"><i class="fa-solid fa-user-shield mr-2 text-brand" aria-hidden="true"></i>Compte et sécurité</h3>
+                    <p class="mt-2 text-sm leading-6 text-zinc-400">La rubrique « Profil et sécurité » ou « Informations et sécurité » récapitule les informations du compte. Pour modifier l’adresse e-mail ou le mot de passe, suivez les contrôles affichés et confirmez avec votre mot de passe actuel si cela est demandé. Les informations désactivées sont en lecture seule.</p>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-100"><i class="fa-solid fa-circle-info mr-2 text-brand" aria-hidden="true"></i>En cas de problème</h3>
+                    <p class="mt-2 text-sm leading-6 text-zinc-400">Vérifiez votre connexion, les filtres actifs et les informations fournies. Si un cours, une classe ou une action attendue n’apparaît pas, contactez le chef de département ou l’administrateur selon le cas. Déconnectez-vous sur un appareil partagé.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="etudiant" class="mb-8 scroll-mt-6 rounded-3xl border border-zinc-800 bg-[#202020] p-6 md:p-8" aria-labelledby="guide-etudiant">
+            <div class="flex items-start gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand"><i class="fa-solid fa-user-graduate text-xl" aria-hidden="true"></i></div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-brand">Guide par rôle</p>
+                    <h2 id="guide-etudiant" class="mt-1 text-2xl font-extrabold text-gray-100">Espace étudiant</h2>
+                </div>
+            </div>
+            <ol class="mt-6 space-y-5">
+                <li><h3 class="font-bold text-gray-100">1. Créer un compte et se connecter</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Depuis la page d’inscription, choisissez le profil étudiant et renseignez les informations demandées, notamment le département, la classe et le code de carte. Utilisez ensuite votre e-mail et votre mot de passe pour accéder au dashboard étudiant.</p></li>
+                <li><h3 class="font-bold text-gray-100">2. Retrouver ses cours</h3><p class="mt-1 text-sm leading-6 text-zinc-400">La section « Mes cours et présences » affiche les cours auxquels vous êtes inscrit. Les filtres du menu latéral permettent de distinguer tous les cours, les cours actifs et les cours achevés. Utilisez la recherche, le nombre d’éléments par page et la pagination pour retrouver un cours.</p></li>
+                <li><h3 class="font-bold text-gray-100">3. Rejoindre un cours</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Sélectionnez « Rejoindre un nouveau cours » dans la page ou le menu. Choisissez un cours disponible correspondant à votre classe et votre département, sélectionnez « Rejoindre », saisissez le code d’enregistrement communiqué par le responsable du cours, puis validez. Le cours rejoint sera ensuite visible dans votre liste.</p></li>
+                <li><h3 class="font-bold text-gray-100">4. Consulter ses présences</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Dans la carte du cours concerné, cliquez sur « Voir mes présences ». La fenêtre affiche le registre du cours, les dates de séance et votre taux de présence calculé à partir des journées où l’appel a été effectué.</p></li>
+                <li><h3 class="font-bold text-gray-100">5. Vérifier les informations du profil</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Dans « Profil et sécurité », la classe et le code de carte sont affichés comme informations non modifiables, avec le nom, le matricule et le département. Pour modifier les informations de connexion, utilisez « Modifier le profil » et suivez les étapes affichées.</p></li>
+            </ol>
+        </section>
+
+        <section id="professeur" class="mb-8 scroll-mt-6 rounded-3xl border border-zinc-800 bg-[#202020] p-6 md:p-8" aria-labelledby="guide-professeur">
+            <div class="flex items-start gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand"><i class="fa-solid fa-chalkboard-user text-xl" aria-hidden="true"></i></div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-brand">Guide par rôle</p>
+                    <h2 id="guide-professeur" class="mt-1 text-2xl font-extrabold text-gray-100">Espace professeur</h2>
+                </div>
+            </div>
+            <ol class="mt-6 space-y-5">
+                <li><h3 class="font-bold text-gray-100">1. Consulter les cours assignés</h3><p class="mt-1 text-sm leading-6 text-zinc-400">La page « Mes cours assignés » liste les cours attribués par le chef de département. Utilisez les filtres Tous les cours, Cours actifs, Cours achevés ou Cours futurs, ainsi que la recherche et la pagination. Les cartes sont informatives : utilisez les boutons d’action qu’elles contiennent.</p></li>
+                <li><h3 class="font-bold text-gray-100">2. Ouvrir le registre</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Sélectionnez « Registre » sur la carte du cours. Le registre rassemble les étudiants inscrits, leurs présences par date et la colonne « Code carte ». Les journées sans appel sont indiquées comme non prises. Utilisez les boutons dédiés pour exporter le registre en Excel ou en PDF.</p></li>
+                <li><h3 class="font-bold text-gray-100">3. Faire l’appel</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Sélectionnez « Faire l’appel ». Le démarrage nécessite des étudiants inscrits. Scannez la carte de l’étudiant ou saisissez son code dans le champ prévu, puis vérifiez le retour affiché. Le code carte est celui associé au compte étudiant. Sélectionnez « Finir l’appel » quand la séance est terminée.</p></li>
+                <li><h3 class="font-bold text-gray-100">4. Gérer son compte</h3><p class="mt-1 text-sm leading-6 text-zinc-400">La rubrique « Profil et sécurité » permet de consulter les informations du compte et de mettre à jour les éléments modifiables, comme l’e-mail, le mot de passe ou la photo de profil lorsque l’option est disponible.</p></li>
+            </ol>
+        </section>
+
+        <section id="chef-departement" class="mb-8 scroll-mt-6 rounded-3xl border border-zinc-800 bg-[#202020] p-6 md:p-8" aria-labelledby="guide-chef">
+            <div class="flex items-start gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand"><i class="fa-solid fa-building-user text-xl" aria-hidden="true"></i></div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-brand">Guide par rôle</p>
+                    <h2 id="guide-chef" class="mt-1 text-2xl font-extrabold text-gray-100">Espace chef de département</h2>
+                </div>
+            </div>
+            <ol class="mt-6 space-y-5">
+                <li><h3 class="font-bold text-gray-100">1. Suivre les cours et les élèves</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Le menu donne accès à la gestion des cours et à la liste des classes et étudiants du département. Les compteurs et filtres permettent de distinguer cours actifs, achevés et futurs. Dans la liste des élèves, filtrez par classe ou année académique et consultez une classe avec son bouton d’action.</p></li>
+                <li><h3 class="font-bold text-gray-100">2. Créer un cours</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Dans « Gestion de mes cours », sélectionnez « Créer un nouveau cours ». Renseignez le nom, l’année académique, le code du cours, la classe, le professeur à assigner, le code d’enregistrement et les dates. Vérifiez les informations avant la création ; le professeur assigné pourra ensuite consulter le cours dans son dashboard.</p></li>
+                <li><h3 class="font-bold text-gray-100">3. Consulter et gérer les cours</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Sur chaque carte, « Voir le cours » ouvre le registre et les détails des élèves inscrits ; les exports Excel et PDF sont disponibles depuis cette vue. « Gérer le cours » permet de modifier les éléments proposés par le formulaire de gestion. « Supprimer » est une action à confirmer : vérifiez attentivement les avertissements avant de continuer.</p></li>
+                <li><h3 class="font-bold text-gray-100">4. Consulter les classes</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Dans l’espace des élèves, utilisez les filtres et la recherche pour trouver une classe. « Voir les élèves » affiche les étudiants associés à cette classe ainsi que les informations de promotion disponibles.</p></li>
+                <li><h3 class="font-bold text-gray-100">5. Gérer le profil</h3><p class="mt-1 text-sm leading-6 text-zinc-400">La rubrique « Profil et sécurité » contient les données du compte. Utilisez les commandes de modification pour l’e-mail, le mot de passe ou la photo lorsque ces options sont proposées.</p></li>
+            </ol>
+        </section>
+
+        <section id="administrateur" class="mb-8 scroll-mt-6 rounded-3xl border border-zinc-800 bg-[#202020] p-6 md:p-8" aria-labelledby="guide-admin">
+            <div class="flex items-start gap-4">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand"><i class="fa-solid fa-shield-halved text-xl" aria-hidden="true"></i></div>
+                <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-brand">Guide par rôle</p>
+                    <h2 id="guide-admin" class="mt-1 text-2xl font-extrabold text-gray-100">Espace administrateur</h2>
+                </div>
+            </div>
+            <ol class="mt-6 space-y-5">
+                <li><h3 class="font-bold text-gray-100">1. Lire le tableau de bord</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Les cartes statistiques et les onglets donnent accès aux départements, aux inscriptions en attente, aux chefs de département, aux professeurs et à « Info et sécurité ». Les cartes de contenu s’ouvrent à l’aide de leurs boutons dédiés.</p></li>
+                <li><h3 class="font-bold text-gray-100">2. Créer et consulter les départements</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Dans l’onglet « Départements », recherchez un département ou créez-en un avec le formulaire. Le bouton « Consulter » ouvre le détail et les classes associées. Vous pouvez ajouter une classe si la limite affichée le permet, consulter ses élèves et cours, ou supprimer un élément.</p></li>
+                <li><h3 class="font-bold text-gray-100">3. Traiter les inscriptions en attente</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Ouvrez l’onglet correspondant aux chefs ou aux professeurs en attente, vérifiez les informations de la demande, puis choisissez « Confirmer » ou « Supprimer ». Toute suppression ou tout remplacement de chef est potentiellement définitif : lisez et confirmez attentivement le dialogue de sécurité.</p></li>
+                <li><h3 class="font-bold text-gray-100">4. Consulter les comptes</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Les onglets « Chefs de départements » et « Professeurs » proposent la recherche et des fiches de compte. Utilisez « Détails et actions » pour ouvrir les options disponibles pour le compte concerné.</p></li>
+                <li><h3 class="font-bold text-gray-100">5. Gérer les codes administratifs</h3><p class="mt-1 text-sm leading-6 text-zinc-400">Dans « Info et sécurité », consultez les codes disponibles pour les prochaines inscriptions de professeurs et de chefs de département. « Actualiser » recharge les codes ; « Anciens codes » ouvre l’historique. Communiquez les codes uniquement aux personnes autorisées et traitez l’historique selon les règles de votre établissement.</p></li>
+                <li><h3 class="font-bold text-gray-100">6. Confirmer les actions sensibles</h3><p class="mt-1 text-sm leading-6 text-zinc-400">La suppression d’un département ou d’une classe peut entraîner la suppression de données liées, comme des cours, inscriptions ou présences. Consultez le message de confirmation avant toute opération irréversible et n’agissez que si vous êtes certain de la demande.</p></li>
+            </ol>
+        </section>
+
+        <div class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-zinc-800 bg-[#202020] p-5">
+            <p class="text-sm text-zinc-400">Besoin de retourner à votre espace ? Connectez-vous avec votre compte.</p>
+            <a href="login.html" class="rounded-xl bg-brand px-4 py-2.5 text-xs font-bold text-white transition-all hover:bg-brand-hover">
+                Aller à la connexion<i class="fa-solid fa-arrow-right ml-2" aria-hidden="true"></i>
+            </a>
+        </div>
+    </main>
+</body>
+
+</html>
