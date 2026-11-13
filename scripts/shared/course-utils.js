@@ -1,3 +1,15 @@
+function isCourseEnded(course) {
+    if (!course?.date_fin) return false;
+
+    const [year, month, day] = course.date_fin.split('-').map(Number);
+    if (!year || !month || !day) return false;
+
+    const end = new Date(year, month - 1, day);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return end < today;
+}
+
 // Vérifie si un cours correspond au filtre de statut (actif, terminé, à venir)
 function courseMatchesStatus(course, status) {
     if (!course || status === 'all') return true;

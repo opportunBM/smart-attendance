@@ -234,6 +234,11 @@ function closeAttendanceRegisterModal() {
 
 // Ouvre l'appel avec le code de carte enregistré dans card_code.
 async function openLiveAttendanceModal(course) {
+  if (isCourseEnded(course)) {
+    showNotification("Impossible de faire l'appel : ce cours est terminé.", "error");
+    return;
+  }
+
   let modal = document.getElementById("live-attendance-modal");
   if (!modal) {
     modal = document.createElement("div");
@@ -397,6 +402,12 @@ async function processStudentCardScan(cardCode, course, today) {
   studentCard.classList.add("hidden");
 
   try {
+    if (isCourseEnded(course)) {
+      showNotification("Impossible de faire l'appel : ce cours est terminé.", "error");
+      closeLiveAttendanceModal();
+      return;
+    }
+
     const normalizedCardCode = String(cardCode).replace(/\s/g, "");
     const { data: students, error } = await _supabase
       .from("utilisateurs")

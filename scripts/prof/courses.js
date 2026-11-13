@@ -77,6 +77,7 @@ async function loadProfessorCours() {
       card.className =
         "dashboard-hover-card course-card bg-[#191919] border border-zinc-800 p-5 rounded-2xl shadow-md transition-all flex flex-col justify-between";
       const hasEnrolledStudents = studentCount > 0;
+      const courseEnded = isCourseEnded(course);
       card.innerHTML = `
                 <div>
                     <div class="flex justify-between items-start mb-2">
@@ -98,13 +99,22 @@ async function loadProfessorCours() {
                         rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer flex items-center gap-1.5">
                             <i class="fa-solid fa-table-list"></i> Registre
                         </button>
-                        <button onclick='openLiveAttendanceIfStudents(${JSON.stringify(course)})' class="px-3 py-2 ${
-                          hasEnrolledStudents
+                        <button ${
+                          courseEnded ? "disabled" : ""
+                        } onclick='openLiveAttendanceIfStudents(${JSON.stringify(course)})' class="px-3 py-2 ${
+                          courseEnded
+                            ? "bg-zinc-700 cursor-not-allowed opacity-60"
+                            : hasEnrolledStudents
                             ? "bg-brand hover:bg-brand-hover cursor-pointer"
                             : "bg-zinc-700 cursor-not-allowed opacity-60"
                         } text-white rounded-xl text-xs font-bold transition-all shadow-md flex items-center gap-1.5">
                             <i class="fa-solid fa-clipboard-user"></i> Faire l'appel
                         </button>
+                        ${
+                          courseEnded
+                            ? '<span class="text-[11px] text-red-400">Cours terminé</span>'
+                            : ""
+                        }
                     </div>
                 </div>`;
       gridContainer.appendChild(card);
@@ -128,6 +138,11 @@ async function loadProfessorCours() {
 }
 
 async function openLiveAttendanceIfStudents(course) {
+  if (isCourseEnded(course)) {
+    showNotification("Impossible de faire l'appel : ce cours est terminé.", "error");
+    return;
+  }
+
   const { data, error } = await _supabase
     .from("inscriptions")
     .select("etudiant_id, etudiant_email")
